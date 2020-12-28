@@ -20,15 +20,18 @@ func main() {
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Logger)
 
+	userRepo := users.NewRepo()
+
 	// router
 	r.Mount("/users", users.NewService(users.ServiceConfig{
-		Repo:     users.NewRepo(),
+		Repo:     userRepo,
 		Response: new(utils.HTTPJSONResponse),
 	}))
 
 	r.Mount("/charts", chart.NewService(chart.ServiceConfig{
-		Repo:     chart.NewRepo(),
-		Response: new(utils.HTTPJSONResponse),
+		Repo:        chart.NewRepo(),
+		UserService: userRepo,
+		Response:    new(utils.HTTPJSONResponse),
 	}))
 
 	println("serve at", PORT)

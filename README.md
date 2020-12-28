@@ -1,4 +1,4 @@
-## Basic user CRUD with Auth
+## Mini Backend
 
 ### Requirement
 
@@ -10,6 +10,12 @@
 
 `$ docker-compose up `
 
+#### Available Make command
+
+-   Make test
+-   Make build
+-   Make clean
+
 #### Available Endpoint
 
 -   POST /users
@@ -18,6 +24,7 @@
 -   POST /users/auth
 -   POST /charts (must login)
 -   GET /charts (must login)
+-   POST /charts/favorite (must login)
 
 #### POSTMAN collection
 

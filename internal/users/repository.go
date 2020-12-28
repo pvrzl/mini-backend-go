@@ -70,6 +70,17 @@ func (r *repo) Delete(id int) error {
 	return nil
 }
 
+func (r *repo) IsIDExist(id int) error {
+	r.mux.Lock()
+	defer r.mux.Unlock()
+	idx := r.getIndex(id)
+	if idx == -1 {
+		return ErrNotfound
+	}
+
+	return nil
+}
+
 func (r *repo) removeIndex(index int) {
 	r.users = append(r.users[:index], r.users[index+1:]...)
 }

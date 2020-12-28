@@ -18,16 +18,23 @@ type (
 	irepo interface {
 		Save(*Chart) error
 		Get(skip, limit int) ([]Chart, error)
+		IsIDExist(int) error
+	}
+
+	iForeignService interface {
+		IsIDExist(int) error
 	}
 
 	service struct {
-		repo     irepo
-		response iresponse
+		repo        irepo
+		userService iForeignService
+		response    iresponse
 	}
 	// ServiceConfig is a config for service
 	ServiceConfig struct {
-		Repo     irepo
-		Response iresponse
+		Repo        irepo
+		UserService iForeignService
+		Response    iresponse
 	}
 
 	genericJSON map[string]interface{}
@@ -36,14 +43,16 @@ type (
 // NewService return a new service
 func NewService(cfg ServiceConfig) http.Handler {
 	svc := service{
-		repo:     cfg.Repo,
-		response: cfg.Response,
+		repo:        cfg.Repo,
+		response:    cfg.Response,
+		userService: cfg.UserService,
 	}
 
 	r := chi.NewRouter()
 	r.Use(middleware.MustLogin)
 	r.Post("/", svc.Insert)
 	r.Get("/", svc.GetAll)
+	r.Post("/favorite", svc.Favorite)
 	return r
 }
 
@@ -82,4 +91,23 @@ func (s service) GetAll(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.response.Resp(w, http.StatusOK, users)
+}
+
+func (s service) Favorite(w http.ResponseWriter, r *http.Request) {
+	fave := new(Favorite)
+
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(fave)
+	if err != nil {
+		s.response.Err(w, http.StatusBadRequest, err)
+		return
+	}
+
+	err = fave.ValidateInsert(s.userService, s.repo)
+	if err != nil {
+		s.response.Err(w, http.StatusBadRequest, err)
+		return
+	}
+
+	s.response.Resp(w, http.StatusCreated, http.StatusText(http.StatusCreated))
 }

@@ -71,3 +71,24 @@ func (r *repo) Get(skip int, limit int) ([]Chart, error) {
 	charts = charts[skip:total]
 	return charts, err
 }
+
+func (r *repo) IsIDExist(id int) error {
+	r.mux.Lock()
+	defer r.mux.Unlock()
+	idx := r.getIndex(id)
+	if idx == -1 {
+		return ErrNotfound
+	}
+
+	return nil
+}
+
+func (r *repo) getIndex(id int) int {
+	for i, v := range r.charts {
+		if v.Id == id {
+			return i
+		}
+	}
+
+	return -1
+}
