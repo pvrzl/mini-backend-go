@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 
+	"lion/internal/chart"
 	"lion/internal/users"
 	"lion/pkg/utils"
 
@@ -22,6 +23,11 @@ func main() {
 	// router
 	r.Mount("/users", users.NewService(users.ServiceConfig{
 		Repo:     users.NewRepo(),
+		Response: new(utils.HTTPJSONResponse),
+	}))
+
+	r.Mount("/charts", chart.NewService(chart.ServiceConfig{
+		Repo:     chart.NewRepo(),
 		Response: new(utils.HTTPJSONResponse),
 	}))
 

@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"lion/pkg/middleware"
+
 	"github.com/go-chi/chi"
 )
 
@@ -51,8 +53,8 @@ func NewService(cfg ServiceConfig) http.Handler {
 
 	r := chi.NewRouter()
 	r.Post("/", svc.Insert)
-	r.Get("/", svc.GetAll)
-	r.Delete("/{id}", svc.Delete)
+	r.With(middleware.MustLogin).Get("/", svc.GetAll)
+	r.With(middleware.MustLogin).Delete("/{id}", svc.Delete)
 	r.Post("/auth", svc.Auth)
 	return r
 }
