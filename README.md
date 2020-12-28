@@ -16,7 +16,7 @@
 -   Make build
 -   Make clean
 
-#### Available Endpoint
+#### Available Endpoint (Default HOST: localhost:8000)
 
 -   POST /users
 -   GET /users (must login)
