@@ -1,0 +1,14 @@
+version: '3.1'
+
+services:
+  api:
+    build: 
+      context: .
+      dockerfile: dev.dockerfile
+    restart: always
+    environment:
+      PORT: :8000
+    ports:
+      - 8000:8000
+    volumes:
+      - ./:/app
