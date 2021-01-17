@@ -19,7 +19,6 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Logger)
-
 	userRepo := users.NewRepo()
 
 	// router
